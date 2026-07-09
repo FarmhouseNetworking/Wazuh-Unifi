@@ -150,7 +150,7 @@ Use `wazuh-logtest` on the manager:
 Paste a sample line, for example:
 
 ```
-CEF:0|Ubiquiti|UniFi Network|9.3.33|544|Admin Accessed UniFi Network|1|UNIFIcategory=System UNIFIhost=Office UDM Pro src=105.5.138.59 msg=Admin accessed.
+CEF:0|Ubiquiti|UniFi Network|9.3.33|544|Admin Accessed UniFi Network|1|UNIFIcategory=System UNIFIhost=Office UDM Pro src=203.0.113.59 msg=Admin accessed.
 ```
 
 You should see the `unifi-cef` decoder and the corresponding rule (e.g. 100101) match.

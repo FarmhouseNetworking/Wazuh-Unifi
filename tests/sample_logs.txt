@@ -14,7 +14,7 @@
 
 # Decoder: unifi-cef | Rule: 100101 (Admin Accessed)
 # Based on official CEF example from Ubiquiti docs (with UNIFIsubCategory)
-CEF:0|Ubiquiti|UniFi Network|9.3.33|544|Admin Accessed UniFi Network|1|UNIFIcategory=System UNIFIsubCategory=Admin UNIFIhost=Office UDM Pro UNIFIaccessMethod=web UNIFIadmin=Craig src=105.5.138.59 msg=Craig accessed UniFi Network using the web. Source IP: 105.5.138.59
+CEF:0|Ubiquiti|UniFi Network|9.3.33|544|Admin Accessed UniFi Network|1|UNIFIcategory=System UNIFIsubCategory=Admin UNIFIhost=Office UDM Pro UNIFIaccessMethod=web UNIFIadmin=Craig src=203.0.113.59 msg=Craig accessed UniFi Network using the web. Source IP: 203.0.113.59
 
 # Decoder: unifi-cef | Rule: 100102 (Admin Made Config Changes)
 CEF:0|Ubiquiti|UniFi Network|9.3.33|545|Admin Made Config Changes|3|UNIFIcategory=System UNIFIsubCategory=Admin UNIFIhost=Office UDM Pro src=10.0.0.5 UNIFIadmin=admin@example.com msg=Config changed.
@@ -34,7 +34,7 @@ CEF:0|Ubiquiti|UniFi Network|9.3.33|300|WiFi Client Connected|1|UNIFIcategory=Mo
 
 # Decoder: unifi-cef | Rule: 100106 (WiFi Client Disconnected)
 # Based on official CEF example from Ubiquiti docs
-CEF:0|Ubiquiti|UniFi Network|9.3.33|401|WiFi Client Disconnected|2|UNIFIcategory=Monitoring UNIFIsubCategory=WiFi UNIFIhost=Office UDM Pro UNIFIlastConnectedToDeviceName=Lobby AP UNIFIlastConnectedToDeviceIp=192.168.100.5 UNIFIlastConnectedToDeviceMac=d8:b3:70:fb:fc:dd UNIFIclientAlias=Apple Watch 0d:87 UNIFIclientMac=0a:be:db:c8:0d:81 UNIFIwifiName=Employee WiFi UNIFIduration=6m 22s msg=Apple Watch 0d:87 disconnected from Employee WiFi.
+CEF:0|Ubiquiti|UniFi Network|9.3.33|401|WiFi Client Disconnected|2|UNIFIcategory=Monitoring UNIFIsubCategory=WiFi UNIFIhost=Office UDM Pro UNIFIlastConnectedToDeviceName=Lobby AP UNIFIlastConnectedToDeviceIp=192.168.100.5 UNIFIlastConnectedToDeviceMac=aa:bb:cc:00:11:22 UNIFIclientAlias=Apple Watch 0d:87 UNIFIclientMac=aa:bb:cc:33:44:55 UNIFIwifiName=Employee WiFi UNIFIduration=6m 22s msg=Apple Watch 0d:87 disconnected from Employee WiFi.
 
 # Decoder: unifi-cef | Rule: 100117 (WiFi Client Roaming)
 CEF:0|Ubiquiti|UniFi Network|9.3.33|304|WiFi Client Roaming|1|UNIFIcategory=Monitoring UNIFIsubCategory=WiFi UNIFIclientMac=aa:bb:cc:dd:ee:ff msg=Client roamed from Lobby AP to Office AP.
