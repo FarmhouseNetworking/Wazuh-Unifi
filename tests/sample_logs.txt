@@ -141,3 +141,21 @@ hostapd: ath0: STA aa:bb:cc:dd:ee:ff RADIUS: Access-Request sent
 # To exercise RADIUS correlation rules:
 # - Paste the RADIUS line above 5+ times in 60 s to trigger 100210 (normal brute-force rule).
 # - Paste it 3+ times in 5 minutes with the same source IP to trigger 100216 (aggressive brute-force suspicion).
+
+# =====================================================================
+# Gateway firewall (netfilter) — decoder unifi-fw
+# (Enable "Log" on the gateway firewall/traffic rules. IPs below are the
+#  documentation ranges from RFC 5737, safe to paste.)
+# =====================================================================
+
+# Decoder: unifi-fw | Rule: 100232 (BLOCKED / drop)
+kernel: [WAN_LOCAL-D-0] DESCR="Drop invalid inbound" IN=eth4 OUT= SRC=203.0.113.10 DST=198.51.100.5 LEN=40 PROTO=TCP SPT=54321 DPT=23 WINDOW=1024
+
+# Decoder: unifi-fw | Rule: 100233 (DNAT / port-forward = inbound to exposed service)
+kernel: [WAN_IN-DNAT-1] DESCR="Web port-forward" IN=eth4 OUT=br0 SRC=203.0.113.55 DST=192.0.2.20 LEN=60 PROTO=TCP SPT=40001 DPT=443 WINDOW=64240
+
+# Decoder: unifi-fw | Rule: 100231 (ACCEPT, silenced level 0)
+kernel: [LAN_IN-A-2] DESCR="Allow LAN out" IN=br0 OUT=eth4 SRC=192.0.2.30 DST=203.0.113.200 LEN=52 PROTO=TCP SPT=51000 DPT=443 WINDOW=502
+
+# To exercise the firewall scan-correlation rule (100234):
+# - Paste the "BLOCKED" line above 10+ times within 120 s (same SRC) to trigger a port-scan alert.

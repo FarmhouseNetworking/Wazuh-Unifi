@@ -19,6 +19,9 @@ This project provides **decoders** and **rules** so Wazuh can ingest and analyze
 2. **UniFi device syslog**
    Raw syslog from UniFi devices (APs, switches, gateways), e.g. `hostapd`, `ath*`, STA association/disassociation.
 
+3. **Gateway firewall (netfilter)**
+   When you enable **Log** on a gateway firewall / traffic rule (UDM/UXG/USG), the gateway sends kernel netfilter lines like `[WAN_LOCAL-D-0] DESCR="..." SRC=... DST=... PROTO=... DPT=...`. The `unifi-fw` decoder parses these; rules classify ACCEPT / DROP-REJECT / **DNAT** (inbound to a port-forwarded/exposed service) and correlate port scans.
+
 ## Deployment
 
 ### 1. Copy decoder and rules to the Wazuh manager
@@ -92,9 +95,10 @@ sudo systemctl restart wazuh-manager
 | Security | Threat detected and blocked, honeypot, firewall block (level 5-8) |
 | WAN / performance | Failover, high latency, packet loss (level 4-5) |
 | Power | PoE / AP underpowered, PoE availability exceeded (level 5-6) |
-| Correlation | Brute-force, deauth flapping, repeated blocks, multi-threat (level 8-12) |
+| Gateway firewall | netfilter ACCEPT (silenced) / DROP-REJECT / DNAT port-forward hits (level 0-4) |
+| Correlation | Brute-force, deauth flapping, repeated blocks, port-scan, multi-threat (level 8-12) |
 
-In the Wazuh UI you can filter with e.g. `rule.groups:unifi` or by rule ID range `100100`-`100218`.
+In the Wazuh UI you can filter with e.g. `rule.groups:unifi`, `rule.groups:firewall`, or by rule ID range `100100`-`100234`.
 
 ## Correlation / frequency rules
 
@@ -129,8 +133,9 @@ Rules include `<mitre>` tags so events appear in the Wazuh MITRE dashboard:
 | Impair Defenses | T1562 | 100102 (config changes) |
 | Hardware Additions | T1200 | 100103 (device adopted) |
 | Service Stop | T1489 | 100104, 100112 (device offline, WAN failover) |
-| Application Layer Protocol | T1071 | 100109, 100111, 100213 (threats, firewall) |
-| Network Service Scanning | T1046 | 100110, 100212 (honeypot, repeated blocks) |
+| Application Layer Protocol | T1071 | 100109, 100111, 100213, 100232 (threats, firewall blocks) |
+| Network Service Scanning | T1046 | 100110, 100212, 100234 (honeypot, repeated blocks, port scan) |
+| Exploit Public-Facing Application | T1190 | 100233 (DNAT / port-forward hit on an exposed service) |
 | Brute Force | T1110 | 100210 (RADIUS brute-force) |
 | Network Denial of Service | T1498 | 100211 (deauth flapping) |
 

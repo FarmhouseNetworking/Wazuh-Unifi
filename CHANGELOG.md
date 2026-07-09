@@ -21,6 +21,10 @@ All notable changes to this project will be documented in this file.
 - **Sample logs updated**: All samples now include `UNIFIsubCategory` and use official event names from Ubiquiti docs. Added verification notes and version references.
 
 ### Added
+- **Gateway firewall (netfilter) support** — new decoder `unifi-fw` and rules `100230`-`100234`. UniFi gateways (UDM/UXG/USG) log firewall rule hits to syslog when **Log** is enabled on a rule (`[<ZONE>-<ACTION>-<N>] DESCR="..." SRC=... DST=... PROTO=... DPT=...`):
+  - `100231` ACCEPT (silenced, level 0), `100232` DROP/REJECT (level 4), `100233` **DNAT/SNAT** = inbound to a port-forwarded/exposed service (level 4, MITRE T1190), `100234` repeated blocks from one source in 120 s = port scan (level 10, MITRE T1046).
+  - The action code is matched as a generic `[A-Za-z]+` so **DNAT** hits are captured, not silently ignored (a narrow `[ADR]` match misses inbound access to exposed services).
+  - Firewall sample lines added to `tests/sample_logs.txt` (RFC 5737 documentation IPs).
 - **New rule 100117**: WiFi Client Roaming (Monitoring category, level 2). Event listed in official docs under Monitoring > WiFi.
 - **New rule 100118**: PoE Availability Exceeded (Power category, level 5). Event listed in official docs under Power > Redundancy.
 - **New decoder `unifi-cef-subcategory`**: Extracts `UNIFIsubCategory` CEF key (e.g. Admin, WiFi, Firewall, PoE).

@@ -95,3 +95,17 @@
   <regex>STA ([0-9a-fA-F:]{17}) .* (disassociated)</regex>
   <order>unifi_client_mac, action</order>
 </decoder>
+
+<!-- ==================================================================
+     Gateway firewall (netfilter) — UniFi gateways (UDM/UXG/USG) log firewall
+     rule hits to syslog when "Log" is enabled on a firewall/traffic rule.
+     Format: ...[<ZONE>-<ACTION>-<N>] DESCR="<rule name>" IN=.. OUT=.. SRC=.. DST=.. PROTO=.. SPT=.. DPT=..
+     <ACTION>: A=accept, D=drop, R=reject, DNAT/SNAT=NAT (port-forward).
+     Match a generic action code (not just [ADR]) so DNAT hits — inbound access to
+     port-forwarded/exposed services — are captured instead of silently ignored.
+     ================================================================== -->
+<decoder name="unifi-fw">
+  <prematch>] DESCR=</prematch>
+  <regex type="pcre2">\[([A-Za-z0-9_]+)-([A-Za-z]+)-\d+\] DESCR="([^"]*)".*?\bSRC=(\d+\.\d+\.\d+\.\d+)\s+DST=(\d+\.\d+\.\d+\.\d+).*?\bPROTO=(\w+)(?:\s+SPT=(\d+)\s+DPT=(\d+))?</regex>
+  <order>unifi_zone,unifi_action,unifi_descr,srcip,dstip,protocol,srcport,dstport</order>
+</decoder>

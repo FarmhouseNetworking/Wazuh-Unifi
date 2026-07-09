@@ -329,4 +329,59 @@
       <id>T1046</id><!-- Network Service Scanning / recon via multiple vectors -->
     </mitre>
   </rule>
+
+  <!-- ================================================================
+       Gateway firewall (netfilter) events — decoder unifi-fw.
+       Enable "Log" on the gateway firewall/traffic rules to emit these.
+       ================================================================ -->
+
+  <!-- Grouping rule: all firewall events -->
+  <rule id="100230" level="0">
+    <decoded_as>unifi-fw</decoded_as>
+    <description>UniFi gateway firewall event (grouping).</description>
+    <group>unifi,firewall,syslog,</group>
+  </rule>
+
+  <!-- ACCEPT: allowed traffic (silenced by default; high volume). Raise the level if you
+       want an audit trail of allowed flows. -->
+  <rule id="100231" level="0">
+    <if_sid>100230</if_sid>
+    <field name="unifi_action">^A$</field>
+    <description>UniFi firewall: ACCEPT ($(unifi_descr)) $(srcip) -> $(dstip):$(dstport)/$(protocol).</description>
+    <group>unifi,firewall,syslog,</group>
+  </rule>
+
+  <!-- DROP / REJECT: blocked traffic. -->
+  <rule id="100232" level="4">
+    <if_sid>100230</if_sid>
+    <field name="unifi_action" type="pcre2">^[DR]$</field>
+    <description>UniFi firewall: BLOCKED ($(unifi_descr)) $(srcip) -> $(dstip):$(dstport)/$(protocol).</description>
+    <group>unifi,firewall,syslog,</group>
+    <mitre>
+      <id>T1071</id><!-- Application Layer Protocol -->
+    </mitre>
+  </rule>
+
+  <!-- DNAT / SNAT: port-forward / NAT hit = inbound access to an EXPOSED service.
+       A public $(srcip) here means someone on the Internet reached a forwarded service. -->
+  <rule id="100233" level="4">
+    <if_sid>100230</if_sid>
+    <field name="unifi_action" type="pcre2">^(DNAT|SNAT)$</field>
+    <description>UniFi firewall: NAT/port-forward hit ($(unifi_descr)) from $(srcip) to $(dstip):$(dstport) — inbound access to an exposed service.</description>
+    <group>unifi,firewall,syslog,</group>
+    <mitre>
+      <id>T1190</id><!-- Exploit Public-Facing Application -->
+    </mitre>
+  </rule>
+
+  <!-- Correlation: many blocks from one source in 120 s = port scan / probing. -->
+  <rule id="100234" level="10" frequency="10" timeframe="120">
+    <if_matched_sid>100232</if_matched_sid>
+    <same_source_ip />
+    <description>UniFi firewall: repeated blocks from $(srcip) in 120 s — port scan / probing.</description>
+    <group>unifi,firewall,syslog,</group>
+    <mitre>
+      <id>T1046</id><!-- Network Service Scanning -->
+    </mitre>
+  </rule>
 </group>
